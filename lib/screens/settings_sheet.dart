@@ -90,9 +90,8 @@ class _SettingsSheetState extends State<_SettingsSheet> {
               Text('BEACH BUDDY AI', style: AppText.label()),
               const SizedBox(height: 6),
               Text(
-                'Runs on open-source models (Llama, Qwen, Mistral) through any OpenAI-compatible server. '
-                'Ollama is free and runs on your own computer. Groq, OpenRouter and Hugging Face host '
-                'open models in the cloud with a free API key.',
+                'Works out of the box with a free open-source model (GPT-OSS), no account needed. '
+                'Optional: pick another provider below if you have your own key or run Ollama on a computer.',
                 style: AppText.body(13, color: Palette.inkSoft),
               ),
               const SizedBox(height: 14),
@@ -127,7 +126,7 @@ class _SettingsSheetState extends State<_SettingsSheet> {
                 controller: _key,
                 obscureText: _hideKey,
                 style: AppText.body(15),
-                decoration: deco('API key (leave empty for Ollama)',
+                decoration: deco('API key (not needed for Free or Ollama)',
                     suffix: IconButton(
                       onPressed: () => setState(() => _hideKey = !_hideKey),
                       icon: Icon(_hideKey ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: Palette.inkSoft),

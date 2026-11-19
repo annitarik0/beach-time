@@ -47,11 +47,13 @@ class StorageService {
 
   AiConfig get aiConfig {
     final raw = _prefs.getString('ai');
-    if (raw == null) return AiConfig.presets.values.first;
+    if (raw == null) return AiConfig.free;
     try {
-      return AiConfig.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      final c = AiConfig.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+      // Old default (Ollama on localhost) never works on a phone.
+      return c.isConfigured && !c.baseUrl.contains('localhost:11434') ? c : AiConfig.free;
     } catch (_) {
-      return AiConfig.presets.values.first;
+      return AiConfig.free;
     }
   }
 

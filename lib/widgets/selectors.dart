@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+
 import '../theme/ph_icons.dart';
 
 import '../logic/activity.dart';
@@ -22,59 +23,75 @@ class ActivitySelector extends StatelessWidget {
       height: 48,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(color: Palette.sunk, borderRadius: BorderRadius.circular(16)),
-      child: LayoutBuilder(builder: (context, c) {
-        final w = c.maxWidth / items.length;
-        return Stack(
-          children: [
-            AnimatedPositioned(
-              duration: const Duration(milliseconds: 380),
-              curve: Curves.easeOutCubic,
-              left: w * index,
-              top: 0,
-              bottom: 0,
-              width: w,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Palette.ink,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: const [BoxShadow(color: Color(0x220F2A35), blurRadius: 10, offset: Offset(0, 4))],
+      child: LayoutBuilder(
+        builder: (context, c) {
+          final w = c.maxWidth / items.length;
+          return Stack(
+            children: [
+              AnimatedPositioned(
+                duration: const Duration(milliseconds: 380),
+                curve: Curves.easeOutCubic,
+                left: w * index,
+                top: 0,
+                bottom: 0,
+                width: w,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Palette.ink,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: const [BoxShadow(color: Color(0x220F2A35), blurRadius: 10, offset: Offset(0, 4))],
+                  ),
                 ),
               ),
-            ),
-            Row(
-              children: [
-                for (final a in items)
-                  Expanded(
-                    child: Semantics(
-                      button: true,
-                      selected: a == value,
-                      label: a.label,
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          HapticFeedback.selectionClick();
-                          onChanged(a);
-                        },
-                        child: TweenAnimationBuilder<Color?>(
-                          tween: ColorTween(end: a == value ? Colors.white : Palette.inkSoft),
-                          duration: const Duration(milliseconds: 250),
-                          builder: (_, color, __) => Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(a.icon, size: 18, color: color),
-                              const SizedBox(width: 7),
-                              Text(a.label, style: AppText.body(14, color: color!, weight: FontWeight.w700)),
-                            ],
+              Positioned.fill(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    for (final a in items)
+                      Expanded(
+                        child: Semantics(
+                          button: true,
+                          selected: a == value,
+                          label: a.label,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              HapticFeedback.selectionClick();
+                              onChanged(a);
+                            },
+                            child: TweenAnimationBuilder<Color?>(
+                              tween: ColorTween(end: a == value ? Colors.white : Palette.inkSoft),
+                              duration: const Duration(milliseconds: 250),
+                              builder: (_, color, __) => Center(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Icon(a.icon, size: 18, color: color),
+                                    const SizedBox(width: 7),
+                                    Text(
+                                      a.label,
+                                      maxLines: 1,
+                                      textHeightBehavior: const TextHeightBehavior(
+                                        applyHeightToFirstAscent: false,
+                                        applyHeightToLastDescent: false,
+                                      ),
+                                      style: AppText.body(14, color: color!, weight: FontWeight.w700),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-              ],
-            ),
-          ],
-        );
-      }),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -146,10 +163,7 @@ class DayChips extends StatelessWidget {
                     duration: const Duration(milliseconds: 280),
                     width: sel ? 26 : 18,
                     height: 4,
-                    decoration: BoxDecoration(
-                      color: Palette.score(score),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
+                    decoration: BoxDecoration(color: Palette.score(score), borderRadius: BorderRadius.circular(2)),
                   ),
                 ],
               ),

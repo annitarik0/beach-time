@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+
 import '../theme/ph_icons.dart';
+
 import 'package:provider/provider.dart';
 
 import '../logic/activity.dart';
@@ -22,16 +24,17 @@ class _AiChatScreenState extends State<AiChatScreen> {
   final _text = TextEditingController();
   final _scroll = ScrollController();
   final List<AiMessage> _messages = [];
+  final Set<int> _offline = {}; // indexes of answers made without the AI
   bool _thinking = false;
   String? _error;
 
   List<(IconData, String)> _suggestions(Activity a) => [
-        (PhIcons.calendarCheck, 'Plan my perfect beach day'),
-        (PhIcons.clock, 'When is the safest time to ${a.verb}?'),
-        (PhIcons.baby, 'Is it OK for kids today?'),
-        (PhIcons.star, 'Which day this week is best?'),
-        (PhIcons.bowlFood, 'What should I bring to eat and drink?'),
-      ];
+    (PhIcons.calendarCheck, 'Plan my perfect beach day'),
+    (PhIcons.clock, 'When is the safest time to ${a.verb}?'),
+    (PhIcons.baby, 'Is it OK for kids today?'),
+    (PhIcons.star, 'Which day this week is best?'),
+    (PhIcons.bowlFood, 'What should I bring to eat and drink?'),
+  ];
 
   @override
   void dispose() {
@@ -51,8 +54,13 @@ class _AiChatScreenState extends State<AiChatScreen> {
     });
     _toBottom();
     try {
-      final answer = await context.read<BeachController>().askAi(_messages);
-      if (mounted) setState(() => _messages.add(AiMessage('assistant', answer)));
+      final reply = await context.read<BeachController>().askAi(_messages);
+      if (mounted) {
+        setState(() {
+          if (reply.offline) _offline.add(_messages.length);
+          _messages.add(AiMessage('assistant', reply.text));
+        });
+      }
     } catch (e) {
       if (mounted) setState(() => _error = e.toString());
     } finally {
@@ -64,8 +72,11 @@ class _AiChatScreenState extends State<AiChatScreen> {
   void _toBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scroll.hasClients) {
-        _scroll.animateTo(_scroll.position.maxScrollExtent + 120,
-            duration: const Duration(milliseconds: 350), curve: Curves.easeOutCubic);
+        _scroll.animateTo(
+          _scroll.position.maxScrollExtent + 120,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOutCubic,
+        );
       }
     });
   }
@@ -98,10 +109,12 @@ class _AiChatScreenState extends State<AiChatScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('Beach Buddy', style: AppText.title(18)),
-                        Text('${c.aiConfig.model} · reading ${c.beach.name}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppText.body(12, color: Palette.inkSoft)),
+                        Text(
+                          '${c.aiConfig.isFree ? 'Free open-source AI' : c.aiConfig.model} · reading ${c.beach.name}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppText.body(12, color: Palette.inkSoft),
+                        ),
                       ],
                     ),
                   ),
@@ -120,8 +133,9 @@ class _AiChatScreenState extends State<AiChatScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 children: [
                   _Bubble(
-                    text: 'Hi, I\'m Beach Buddy. I run on an open-source model and I\'m reading '
-                        'the live forecast for ${c.beach.name}. What would you like to know?',
+                    text:
+                        'Hi, I\'m Beach Buddy. I\'m reading the live forecast for ${c.beach.name}. '
+                        'Ask me anything, like the safest time to swim or what to bring.',
                     mine: false,
                   ),
                   if (_messages.isEmpty) ...[
@@ -144,7 +158,9 @@ class _AiChatScreenState extends State<AiChatScreen> {
                                 children: [
                                   Icon(s.$1, size: 18, color: Palette.sea),
                                   const SizedBox(width: 12),
-                                  Expanded(child: Text(s.$2, style: AppText.body(14, weight: FontWeight.w600))),
+                                  Expanded(
+                                    child: Text(s.$2, style: AppText.body(14, weight: FontWeight.w600)),
+                                  ),
                                   const Icon(PhIcons.arrowUpRight, size: 16, color: Palette.inkFaint),
                                 ],
                               ),
@@ -153,7 +169,8 @@ class _AiChatScreenState extends State<AiChatScreen> {
                         ),
                       ).animate(delay: (50 * i).ms).fadeIn(duration: 300.ms).slideY(begin: .2),
                   ],
-                  for (final m in _messages) _Bubble(text: m.content, mine: m.role == 'user'),
+                  for (final (i, m) in _messages.indexed)
+                    _Bubble(text: m.content, mine: m.role == 'user', offline: _offline.contains(i)),
                   if (_thinking) const _Typing(),
                   if (_error != null)
                     Container(
@@ -173,10 +190,6 @@ class _AiChatScreenState extends State<AiChatScreen> {
                               const SizedBox(width: 8),
                               Expanded(child: Text(_error!, style: AppText.body(14))),
                             ],
-                          ),
-                          TextButton(
-                            onPressed: () => showSettingsSheet(context),
-                            child: Text('Open AI settings', style: AppText.body(14, color: Palette.sea, weight: FontWeight.w700)),
                           ),
                         ],
                       ),
@@ -206,9 +219,13 @@ class _AiChatScreenState extends State<AiChatScreen> {
                         fillColor: Palette.card,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
                         enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24), borderSide: const BorderSide(color: Palette.line)),
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: const BorderSide(color: Palette.line),
+                        ),
                         focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(24), borderSide: const BorderSide(color: Palette.sea)),
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: const BorderSide(color: Palette.sea),
+                        ),
                       ),
                     ),
                   ),
@@ -229,32 +246,50 @@ class _AiChatScreenState extends State<AiChatScreen> {
 }
 
 class _Bubble extends StatelessWidget {
-  const _Bubble({required this.text, required this.mine});
+  const _Bubble({required this.text, required this.mine, this.offline = false});
   final String text;
   final bool mine;
+  final bool offline;
 
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 5),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * .8),
-        decoration: BoxDecoration(
-          color: mine ? Palette.ink : Palette.card,
-          border: mine ? null : Border.all(color: Palette.line),
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(20),
-            topRight: const Radius.circular(20),
-            bottomLeft: Radius.circular(mine ? 20 : 6),
-            bottomRight: Radius.circular(mine ? 6 : 20),
+      child: Column(
+        crossAxisAlignment: mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * .8),
+            decoration: BoxDecoration(
+              color: mine ? Palette.ink : Palette.card,
+              border: mine ? null : Border.all(color: Palette.line),
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(20),
+                topRight: const Radius.circular(20),
+                bottomLeft: Radius.circular(mine ? 20 : 6),
+                bottomRight: Radius.circular(mine ? 6 : 20),
+              ),
+            ),
+            child: SelectableText(
+              text.replaceAll('**', ''),
+              style: AppText.body(15, color: mine ? Colors.white : Palette.ink),
+            ),
           ),
-        ),
-        child: SelectableText(
-          text.replaceAll('**', ''),
-          style: AppText.body(15, color: mine ? Colors.white : Palette.ink),
-        ),
+          if (offline)
+            Padding(
+              padding: const EdgeInsets.only(left: 6, bottom: 4),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(PhIcons.info, size: 12, color: Palette.inkFaint),
+                  const SizedBox(width: 4),
+                  Text('Quick answer from the forecast', style: AppText.body(11, color: Palette.inkFaint)),
+                ],
+              ),
+            ),
+        ],
       ).animate().fadeIn(duration: 250.ms).slideY(begin: .15, curve: Curves.easeOutCubic),
     );
   }
@@ -264,30 +299,30 @@ class _Typing extends StatelessWidget {
   const _Typing();
   @override
   Widget build(BuildContext context) => Align(
-        alignment: Alignment.centerLeft,
-        child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 5),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          decoration: BoxDecoration(
-            color: Palette.card,
-            border: Border.all(color: Palette.line),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < 3; i++)
-                Container(
+    alignment: Alignment.centerLeft,
+    child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      decoration: BoxDecoration(
+        color: Palette.card,
+        border: Border.all(color: Palette.line),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < 3; i++)
+            Container(
                   width: 7,
                   height: 7,
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   decoration: const BoxDecoration(color: Palette.sea, shape: BoxShape.circle),
                 )
-                    .animate(onPlay: (c) => c.repeat(reverse: true), delay: (140 * i).ms)
-                    .fade(begin: .3, end: 1, duration: 450.ms)
-                    .moveY(begin: 0, end: -4, duration: 450.ms, curve: Curves.easeInOut),
-            ],
-          ),
-        ),
-      );
+                .animate(onPlay: (c) => c.repeat(reverse: true), delay: (140 * i).ms)
+                .fade(begin: .3, end: 1, duration: 450.ms)
+                .moveY(begin: 0, end: -4, duration: 450.ms, curve: Curves.easeInOut),
+        ],
+      ),
+    ),
+  );
 }

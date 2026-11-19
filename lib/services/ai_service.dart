@@ -18,8 +18,16 @@ class AiConfig {
 
   bool get isConfigured => baseUrl.isNotEmpty && model.isNotEmpty;
 
+  /// Built-in default: GPT-OSS 20B (open-weight, Apache 2.0) through the free
+  /// Pollinations endpoint. No account or API key needed; limited to about
+  /// one reply every 45 seconds per device.
+  static const free = AiConfig(baseUrl: 'https://text.pollinations.ai/openai', model: 'openai-fast');
+
+  bool get isFree => baseUrl == free.baseUrl;
+
   /// Presets for popular ways to run open-weight models.
   static const presets = <String, AiConfig>{
+    'Free, built in (GPT-OSS)': free,
     'Ollama (local, free)': AiConfig(
         baseUrl: 'http://localhost:11434/v1', model: 'llama3.2'),
     'Groq (Llama, free tier)': AiConfig(
@@ -50,11 +58,25 @@ class AiMessage {
   Map<String, String> toJson() => {'role': role, 'content': content};
 }
 
+/// A Beach Buddy answer. [offline] means it came from the built-in
+/// forecast rules because the AI was busy or unreachable.
+class BuddyReply {
+  const BuddyReply(this.text, {this.offline = false});
+  final String text;
+  final bool offline;
+}
+
 class AiException implements Exception {
   AiException(this.message);
   final String message;
   @override
   String toString() => message;
+}
+
+/// The free tier is cooling down; try again after [retryAfter].
+class AiBusyException extends AiException {
+  AiBusyException(this.retryAfter) : super('Beach Buddy is busy, try again in a few seconds.');
+  final Duration retryAfter;
 }
 
 /// "Beach Buddy": an open-source LLM that reads today's real conditions
@@ -91,7 +113,7 @@ class AiService {
             body: jsonEncode({
               'model': config.model,
               'temperature': 0.7,
-              'max_tokens': 450,
+              'max_tokens': 700,
               'messages': [
                 const AiMessage('system', systemPrompt).toJson(),
                 ...messages.map((m) => m.toJson()),
@@ -104,6 +126,10 @@ class AiService {
     } catch (_) {
       throw AiException(
           'Could not reach the AI model at ${config.baseUrl}. Is it running?');
+    }
+    if (res.statusCode == 402 || res.statusCode == 429) {
+      final m = RegExp(r'[Rr]etry after (\d+)').firstMatch(utf8.decode(res.bodyBytes));
+      throw AiBusyException(Duration(seconds: int.tryParse(m?.group(1) ?? '') ?? 45));
     }
     if (res.statusCode == 401 || res.statusCode == 403) {
       throw AiException('The AI provider rejected the API key.');

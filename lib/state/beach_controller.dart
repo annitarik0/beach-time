@@ -5,6 +5,7 @@ import '../data/popular_beaches.dart';
 import '../logic/activity.dart';
 import '../logic/beach_score.dart';
 import '../logic/insights.dart';
+import '../logic/offline_buddy.dart';
 import '../models/beach.dart';
 import '../models/forecast.dart';
 import '../services/ai_service.dart';
@@ -281,12 +282,31 @@ class BeachController extends ChangeNotifier {
     return buf.toString();
   }
 
-  Future<String> askAi(List<AiMessage> history) {
+  /// Always answers: the chosen AI first, then the free built-in model,
+  /// then offline answers computed from the forecast.
+  Future<BuddyReply> askAi(List<AiMessage> history) async {
     final withContext = [
       AiMessage('user', 'Forecast data:\n${aiContext()}'),
       const AiMessage('assistant', 'Got it, I have the forecast. Ask me anything!'),
       ...history,
     ];
-    return ai.chat(aiConfig, withContext);
+    final question = history.lastWhere((m) => m.role == 'user').content;
+    try {
+      return BuddyReply(await ai.chat(aiConfig, withContext));
+    } on AiBusyException catch (e) {
+      if (e.retryAfter <= const Duration(seconds: 12)) {
+        await Future<void>.delayed(e.retryAfter + const Duration(seconds: 1));
+        try {
+          return BuddyReply(await ai.chat(aiConfig, withContext));
+        } catch (_) {}
+      }
+    } catch (_) {
+      if (!aiConfig.isFree) {
+        try {
+          return BuddyReply(await ai.chat(AiConfig.free, withContext));
+        } catch (_) {}
+      }
+    }
+    return BuddyReply(offlineAnswer(question, this), offline: true);
   }
 }
