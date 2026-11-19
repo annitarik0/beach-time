@@ -1,0 +1,14 @@
+{
+  "dart.flutterSdkPath": "C:\\Users\\annit\\flutter",
+  "dart.flutterHotReloadOnSave": "all",
+  "dart.previewFlutterUiGuides": true,
+  "editor.formatOnSave": true,
+  "[dart]": {
+    "editor.rulers": [120],
+    "editor.defaultFormatter": "Dart-Code.dart-code"
+  },
+  "files.exclude": {
+    "**/.dart_tool": true,
+    ".playwright-mcp": true
+  }
+}
