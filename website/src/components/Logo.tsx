@@ -43,8 +43,8 @@ export function Wordmark({ className }: { className?: string }) {
     <span className={className} style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
       <LogoMark size={34} />
       <span
-        className="display"
-        style={{ fontSize: 22, letterSpacing: "-0.03em", lineHeight: 1, fontWeight: 750 }}
+        className="display wordmark-text"
+        style={{ transition: "color .4s", fontSize: 22, letterSpacing: "-0.03em", lineHeight: 1, fontWeight: 750 }}
       >
         Beach Time
       </span>

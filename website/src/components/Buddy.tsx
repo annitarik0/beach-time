@@ -63,7 +63,7 @@ export function Buddy() {
   }, []);
 
   return (
-    <section id="buddy" className="section">
+    <section id="buddy" className="section" data-bg="#F4EEE4">
       <div className={`wrap ${styles.grid}`}>
         <div className={`card ${styles.chat}`} ref={box} data-reveal>
           <div className={styles.top}>

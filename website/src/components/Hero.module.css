@@ -85,6 +85,25 @@
 .phoneWrap {
   justify-self: center;
   will-change: transform;
+  perspective: 1400px;
+}
+.tilt {
+  position: relative;
+  border-radius: 56px;
+}
+.glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--gx, 30%) var(--gy, 20%),
+    rgb(255 255 255 / 28%),
+    transparent 45%
+  );
+  mix-blend-mode: soft-light;
+  opacity: var(--go, 0);
+  transition: opacity 0.4s var(--ease);
 }
 
 @media (max-width: 900px) {

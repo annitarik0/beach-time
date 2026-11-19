@@ -29,7 +29,7 @@ const faqs = [
 
 export function Faq() {
   return (
-    <section className="section" id="faq">
+    <section className="section" id="faq" data-bg="#F4EEE4">
       <div className={`wrap ${styles.grid}`}>
         <div className="section-head" data-reveal>
           <span className="label">Questions</span>

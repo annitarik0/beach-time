@@ -4,7 +4,7 @@ import styles from "./Footer.module.css";
 
 export function Footer() {
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} data-bg="#F4EEE4">
       <div className={`wrap ${styles.inner}`}>
         <div className={styles.brand}>
           <Wordmark />

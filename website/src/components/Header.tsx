@@ -15,15 +15,24 @@ const links = [
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [dark, setDark] = useState(false);
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 12);
+    const on = () => {
+      setScrolled(window.scrollY > 12);
+      // Switch to the dark glass while a dark section sits under the header.
+      const under = Array.from(document.querySelectorAll<HTMLElement>("[data-header='dark']")).some((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top < 36 && r.bottom > 36;
+      });
+      setDark(under);
+    };
     on();
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, []);
 
   return (
-    <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
+    <header className={`${styles.header} ${scrolled ? styles.scrolled : ""} ${dark ? styles.dark : ""}`}>
       <div className={`wrap ${styles.inner}`}>
         <a href={asset("/")} aria-label="Beach Time home">
           <Wordmark />

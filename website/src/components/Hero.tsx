@@ -56,7 +56,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section ref={root} className={styles.hero}>
+    <section ref={root} className={styles.hero} data-bg="#F4EEE4">
       <div className={styles.glow} aria-hidden="true" />
       <div className={`wrap ${styles.grid}`}>
         <div className={styles.copy}>
@@ -89,7 +89,10 @@ export function Hero() {
           </ul>
         </div>
         <div className={styles.phoneWrap}>
-          <PhoneMock play={play} />
+          <div className={styles.tilt} data-tilt="14">
+            <PhoneMock play={play} />
+            <span className={styles.glare} data-glare aria-hidden="true" />
+          </div>
         </div>
       </div>
     </section>

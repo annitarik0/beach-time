@@ -1,11 +1,11 @@
 import { AppleLogo, ArrowUpRight, Browser, GithubLogo } from "@phosphor-icons/react/dist/ssr";
 import { REPO_URL, WEB_APP_URL } from "@/lib/brand";
-import { SeaWaves } from "./SeaWaves";
+import { Ocean } from "./Ocean";
 import styles from "./GetApp.module.css";
 
 export function GetApp() {
   return (
-    <section id="get" className={styles.section}>
+    <section id="get" className={styles.section} data-bg="#17768F" data-header="dark">
       <div className={`wrap ${styles.inner}`}>
         <div className={styles.head} data-reveal>
           <span className="label" style={{ color: "rgb(255 255 255 / 75%)" }}>
@@ -19,7 +19,7 @@ export function GetApp() {
         </div>
 
         <div className={styles.options} data-reveal="stagger">
-          <a className={styles.option} href={WEB_APP_URL}>
+          <a data-tilt="6" className={styles.option} href={WEB_APP_URL}>
             <span className={styles.icon}>
               <Browser size={22} weight="bold" />
             </span>
@@ -29,7 +29,7 @@ export function GetApp() {
               Open now <ArrowUpRight size={16} weight="bold" />
             </span>
           </a>
-          <div className={styles.option}>
+          <div data-tilt="6" className={styles.option}>
             <span className={styles.icon}>
               <AppleLogo size={22} weight="fill" />
             </span>
@@ -42,7 +42,7 @@ export function GetApp() {
               Latest build <ArrowUpRight size={16} weight="bold" />
             </a>
           </div>
-          <a className={styles.option} href={REPO_URL}>
+          <a data-tilt="6" className={styles.option} href={REPO_URL}>
             <span className={styles.icon}>
               <GithubLogo size={22} weight="fill" />
             </span>
@@ -54,7 +54,7 @@ export function GetApp() {
           </a>
         </div>
       </div>
-      <SeaWaves height={110} />
+      <Ocean />
     </section>
   );
 }

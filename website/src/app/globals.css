@@ -54,7 +54,8 @@ html.lenis body {
 
 body {
   margin: 0;
-  background: var(--paper);
+  /* One page background, cross-faded by Motion.tsx as sections scroll in. */
+  background: var(--bg, var(--paper));
   color: var(--ink);
   font-family: var(--font-body), system-ui, sans-serif;
   font-weight: 500;
@@ -246,4 +247,10 @@ button {
   .js [data-reveal] {
     opacity: 1;
   }
+}
+
+/* Pointer-driven 3D tilt (see Motion.tsx). */
+[data-tilt] {
+  transform-style: preserve-3d;
+  will-change: transform;
 }

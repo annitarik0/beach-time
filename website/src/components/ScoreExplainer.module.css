@@ -1,6 +1,5 @@
 .section {
-  background: var(--card);
-  border-block: 1px solid var(--line);
+  position: relative;
 }
 
 .grid {

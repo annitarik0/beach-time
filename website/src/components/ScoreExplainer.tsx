@@ -45,7 +45,7 @@ export function ScoreExplainer() {
   const idx = activities.findIndex((a) => a.id === act);
 
   return (
-    <section id="score" className={`section ${styles.section}`}>
+    <section id="score" className={`section ${styles.section}`} data-bg="#FFFCF7">
       <div className={`wrap ${styles.grid}`}>
         <div className="section-head" data-reveal style={{ marginBottom: 0 }}>
           <span className="label">The Beach Score</span>

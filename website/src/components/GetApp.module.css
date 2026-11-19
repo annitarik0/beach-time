@@ -1,9 +1,11 @@
 .section {
   position: relative;
   overflow: hidden;
-  padding: clamp(80px, 11vw, 140px) 0 clamp(150px, 16vw, 200px);
+  padding: clamp(110px, 14vw, 180px) 0 clamp(300px, 34vw, 440px);
   color: #fff;
-  background: linear-gradient(180deg, var(--sky-1), var(--sky-2) 70%, var(--sky-3));
+  /* Starts see-through so the page colour (blending to sky-1) shows, then
+     deepens into the sky that the 3D ocean sits under. */
+  background: linear-gradient(180deg, transparent, transparent 18%, var(--sky-2) 62%, var(--sky-3));
 }
 .section::before {
   content: "";

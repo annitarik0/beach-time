@@ -98,7 +98,7 @@ export function Features() {
     });
 
   return (
-    <section ref={root} id="features" className="section">
+    <section ref={root} id="features" className="section" data-bg="#F4EEE4">
       <div className="wrap">
         <div className="section-head" data-reveal>
           <span className="label">What you get</span>
@@ -111,7 +111,7 @@ export function Features() {
 
         <div className={styles.bento} data-reveal="stagger">
           {/* Best time */}
-          <article className={`card ${styles.cell} ${styles.wide}`}>
+          <article data-tilt="5" className={`card ${styles.cell} ${styles.wide}`}>
             <Head icon={<Clock size={18} weight="bold" />} label="Hour by hour" />
             <h3 className="title">The best window, found for you</h3>
             <p className="muted">
@@ -145,7 +145,7 @@ export function Features() {
           </article>
 
           {/* Sea */}
-          <article className={`card ${styles.cell}`}>
+          <article data-tilt="5" className={`card ${styles.cell}`}>
             <Head icon={<Waves size={18} weight="bold" />} label="Sea" />
             <h3 className="title">Water, waves and tides</h3>
             <div className={styles.stats}>
@@ -171,7 +171,7 @@ export function Features() {
           </article>
 
           {/* Sun */}
-          <article className={`card ${styles.cell}`}>
+          <article data-tilt="5" className={`card ${styles.cell}`}>
             <Head icon={<Sun size={18} weight="bold" />} label="Sun & UV" />
             <h3 className="title">Sunscreen advice that means something</h3>
             <svg className={styles.sunSvg} viewBox="0 0 220 120" aria-hidden="true">
@@ -195,7 +195,7 @@ export function Features() {
           </article>
 
           {/* Safety */}
-          <article className={`card ${styles.cell}`}>
+          <article data-tilt="5" className={`card ${styles.cell}`}>
             <Head icon={<Flag size={18} weight="bold" />} label="Water safety" />
             <h3 className="title">An estimated beach flag</h3>
             <div className={styles.flagRow}>
@@ -213,7 +213,7 @@ export function Features() {
           </article>
 
           {/* Bag */}
-          <article className={`card ${styles.cell}`}>
+          <article data-tilt="5" className={`card ${styles.cell}`}>
             <Head icon={<Backpack size={18} weight="bold" />} label="Beach bag" />
             <h3 className="title">A packing list built from the forecast</h3>
             <ul className={styles.bag}>
@@ -235,7 +235,7 @@ export function Features() {
           </article>
 
           {/* Week */}
-          <article className={`card ${styles.cell} ${styles.wide}`}>
+          <article data-tilt="5" className={`card ${styles.cell} ${styles.wide}`}>
             <Head icon={<Star size={18} weight="bold" />} label="7-day outlook" />
             <h3 className="title">See the best day of the week at a glance</h3>
             <div className={styles.week}>
@@ -262,7 +262,7 @@ export function Features() {
           </article>
 
           {/* Places */}
-          <article className={`card ${styles.cell} ${styles.full}`}>
+          <article data-tilt="5" className={`card ${styles.cell} ${styles.full}`}>
             <div className={styles.places}>
               <div>
                 <Head icon={<MapPin size={18} weight="bold" />} label="Places" />

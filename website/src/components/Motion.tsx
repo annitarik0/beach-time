@@ -54,9 +54,68 @@ export function Motion() {
           },
         );
       });
+
+      // One page background that cross-fades as each section comes in, the
+      // way most award-winning sites do it, instead of hard colour edges.
+      const secs = gsap.utils.toArray<HTMLElement>("[data-bg]");
+      if (secs.length) document.body.style.setProperty("--bg", secs[0].dataset.bg!);
+      secs.forEach((sec, i) => {
+        if (i === 0) return;
+        const from = secs[i - 1].dataset.bg!;
+        const to = sec.dataset.bg!;
+        if (from === to) return;
+        gsap.fromTo(
+          document.body,
+          { "--bg": from },
+          {
+            "--bg": to,
+            ease: "none",
+            immediateRender: false,
+            scrollTrigger: { trigger: sec, start: "top 90%", end: "top 30%", scrub: true },
+          },
+        );
+      });
     });
 
+    // 3D tilt that follows the pointer on elements marked data-tilt="<max deg>".
+    const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const cleanups: (() => void)[] = [];
+    if (fine && !reduce) {
+      document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((el) => {
+        const max = Number(el.dataset.tilt) || 8;
+        const glare = el.querySelector<HTMLElement>("[data-glare]");
+        const rx = gsap.quickTo(el, "rotationX", { duration: 0.6, ease: "power3.out" });
+        const ry = gsap.quickTo(el, "rotationY", { duration: 0.6, ease: "power3.out" });
+        gsap.set(el, { transformPerspective: 1000 });
+        const move = (e: PointerEvent) => {
+          const r = el.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          rx(-py * max);
+          ry(px * max);
+          if (glare) {
+            glare.style.setProperty("--gx", `${(px + 0.5) * 100}%`);
+            glare.style.setProperty("--gy", `${(py + 0.5) * 100}%`);
+            glare.style.setProperty("--go", "1");
+          }
+        };
+        const leave = () => {
+          rx(0);
+          ry(0);
+          glare?.style.setProperty("--go", "0");
+        };
+        el.addEventListener("pointermove", move);
+        el.addEventListener("pointerleave", leave);
+        cleanups.push(() => {
+          el.removeEventListener("pointermove", move);
+          el.removeEventListener("pointerleave", leave);
+        });
+      });
+    }
+
     return () => {
+      cleanups.forEach((c) => c());
+      document.body.style.removeProperty("--bg");
       ctx.revert();
       gsap.ticker.remove(tick);
       lenis?.destroy();
