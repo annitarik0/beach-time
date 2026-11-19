@@ -54,8 +54,7 @@ html.lenis body {
 
 body {
   margin: 0;
-  /* One page background, cross-faded by Motion.tsx as sections scroll in. */
-  background: var(--bg, var(--paper));
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body), system-ui, sans-serif;
   font-weight: 500;
@@ -236,21 +235,19 @@ button {
   opacity: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
-  .js [data-reveal] {
-    opacity: 1;
-  }
-}
+
 
 /* Pointer-driven 3D tilt (see Motion.tsx). */
 [data-tilt] {
   transform-style: preserve-3d;
   will-change: transform;
+}
+
+/* One page background, cross-faded by Motion.tsx as sections scroll in. */
+.page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--paper);
 }

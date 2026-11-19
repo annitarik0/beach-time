@@ -43,7 +43,7 @@ export const viewport: Viewport = {
 
 // Runs before first paint: marks JS as available (so reveal animations can
 // start hidden) and skips the intro loader after the first visit this session.
-const boot = `(function(){var d=document.documentElement;d.classList.add('js');try{if(sessionStorage.getItem('bt-intro'))d.classList.add('intro-seen')}catch(e){}if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('intro-seen')})();`;
+const boot = `(function(){var d=document.documentElement;d.classList.add('js');try{if(sessionStorage.getItem('bt-intro'))d.classList.add('intro-seen')}catch(e){}})();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

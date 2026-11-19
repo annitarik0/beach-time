@@ -39,8 +39,8 @@
   top: 34%;
   height: 22px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgb(255 255 255 / 55%), transparent 70%);
-  filter: blur(6px);
+  background: radial-gradient(ellipse at center, rgb(255 255 255 / 50%), transparent 72%);
+  will-change: transform, opacity;
   animation: wash 6s ease-in-out infinite;
 }
 
@@ -56,8 +56,4 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .shore::before {
-    animation: none;
-  }
-}
+

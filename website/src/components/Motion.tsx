@@ -25,15 +25,15 @@ export function onIntroDone(cb: () => void) {
  */
 export function Motion() {
   useEffect(() => {
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // The site's motion is part of the brand, so it runs even when the OS
+    // asks for reduced motion (Windows does whenever "Show animations" is off).
     let lenis: Lenis | null = null;
     const tick = (t: number) => lenis?.raf(t * 1000);
 
-    if (!reduce) {
+    {
       lenis = new Lenis({ lerp: 0.1, anchors: { offset: -72 } });
       lenis.on("scroll", ScrollTrigger.update);
       gsap.ticker.add(tick);
-      gsap.ticker.lagSmoothing(0);
     }
 
     const ctx = gsap.context(() => {
@@ -58,17 +58,21 @@ export function Motion() {
       // One page background that cross-fades as each section comes in, the
       // way most award-winning sites do it, instead of hard colour edges.
       const secs = gsap.utils.toArray<HTMLElement>("[data-bg]");
-      if (secs.length) document.body.style.setProperty("--bg", secs[0].dataset.bg!);
+      // A single fixed layer is repainted instead of restyling the whole body.
+      const layer = document.createElement("div");
+      layer.className = "page-bg";
+      document.body.prepend(layer);
+      if (secs.length) layer.style.backgroundColor = secs[0].dataset.bg!;
       secs.forEach((sec, i) => {
         if (i === 0) return;
         const from = secs[i - 1].dataset.bg!;
         const to = sec.dataset.bg!;
         if (from === to) return;
         gsap.fromTo(
-          document.body,
-          { "--bg": from },
+          layer,
+          { backgroundColor: from },
           {
-            "--bg": to,
+            backgroundColor: to,
             ease: "none",
             immediateRender: false,
             scrollTrigger: { trigger: sec, start: "top 90%", end: "top 30%", scrub: true },
@@ -80,7 +84,7 @@ export function Motion() {
     // 3D tilt that follows the pointer on elements marked data-tilt="<max deg>".
     const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
     const cleanups: (() => void)[] = [];
-    if (fine && !reduce) {
+    if (fine) {
       document.querySelectorAll<HTMLElement>("[data-tilt]").forEach((el) => {
         const max = Number(el.dataset.tilt) || 8;
         const glare = el.querySelector<HTMLElement>("[data-glare]");
@@ -115,7 +119,7 @@ export function Motion() {
 
     return () => {
       cleanups.forEach((c) => c());
-      document.body.style.removeProperty("--bg");
+      document.querySelector(".page-bg")?.remove();
       ctx.revert();
       gsap.ticker.remove(tick);
       lenis?.destroy();
