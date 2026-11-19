@@ -1,5 +1,5 @@
 import { Wordmark } from "./Logo";
-import { asset, REPO_URL, WEB_APP_URL } from "@/lib/brand";
+import { asset, BEHANCE_URL, REPO_URL, WEB_APP_URL } from "@/lib/brand";
 import styles from "./Footer.module.css";
 
 export function Footer() {
@@ -20,6 +20,7 @@ export function Footer() {
           <div>
             <span className="label">Brand</span>
             <a href={asset("/brand/")}>Brand kit</a>
+            <a href={BEHANCE_URL}>Behance case study</a>
             <a href={asset("/privacy/")}>Privacy</a>
             <a href={REPO_URL}>GitHub</a>
           </div>

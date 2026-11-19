@@ -8,6 +8,7 @@ Everything needed to use the Beach Time brand, matching the app and the website.
 | `behance/` | The same 14 pages as 1920×1200 PNGs, a cover thumbnail and the post text for Behance |
 | `Beach Time Brand Guidelines.pdf` | 11-page guide: idea, logo, usage, colour, type, score, interface, motion, voice, examples |
 | `Beach Time Brand Board (Figma preview).png` | Preview of the Figma brand board |
+| Behance project | https://www.behance.net/gallery/258758635/Beach-Time-Brand-Identity (the published identity case study) |
 | Figma file | https://www.figma.com/design/Hrhm4OQZZabNDXCk0RFw5c (brand board with colour variables and text styles, plus the identity presentation page) |
 | `logo/` | Wave wordmark PNGs (ink, white), app icon SVG, one-colour marks (ink, white, sea), PNG lockups (horizontal and stacked, ink and white, transparent) |
 | `icons/` | App icon PNGs at 1024, 512, 180, 64 and 32 px |

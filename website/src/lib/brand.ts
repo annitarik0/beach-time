@@ -6,6 +6,7 @@ export const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 export const asset = (p: string) => `${base}${p}`;
 
 export const REPO_URL = "https://github.com/annitarik0/beach-time";
+export const BEHANCE_URL = "https://www.behance.net/gallery/258758635/Beach-Time-Brand-Identity";
 export const WEB_APP_URL = asset("/app/");
 
 export type ActivityId = "swim" | "surf" | "chill";
