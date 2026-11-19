@@ -39,6 +39,12 @@ Open Settings (the sliders icon) and pick a preset. Any OpenAI-compatible server
 - **Ollama (100% local and free):** install from ollama.com, run `ollama pull llama3.2`. Works on desktop/web builds at `http://localhost:11434/v1`. For a phone, use your PC's LAN IP and start Ollama with `OLLAMA_HOST=0.0.0.0`.
 - **Groq / OpenRouter / Hugging Face:** host open models in the cloud. Create a free API key on their website and paste it into Settings.
 
+## Website
+
+The marketing site and brand kit are in [`website/`](website/). It is a Next.js site with a GSAP loading
+animation, and it uses the same fonts, colours and score logic as the app. Every push to `main` publishes
+it, plus the web version of the app under `/app/`, to https://annitarik0.github.io/beach-time/
+
 ## Run
 
 Flutter was installed to `%USERPROFILE%\flutter`. Add `%USERPROFILE%\flutter\bin` to your PATH (or install the Flutter extension in VS Code and point it there).
