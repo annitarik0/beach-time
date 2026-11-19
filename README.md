@@ -43,7 +43,7 @@ Open Settings (the sliders icon) and pick a preset. Any OpenAI-compatible server
 
 Flutter was installed to `%USERPROFILE%\flutter`. Add `%USERPROFILE%\flutter\bin` to your PATH (or install the Flutter extension in VS Code and point it there).
 
-**Easiest:** in VS Code press `Ctrl+Shift+B` (task "Beach Time: run in Chrome"), or run `.\run_dev.ps1`. Then press `r` in that terminal to hot reload and `R` to restart. The script runs from `C:\Users\annit\beach_time`, a link to this folder, because the Flutter web debug compiler fails on the space in "BEACH TIME".
+**Easiest:** in VS Code press `Ctrl+Shift+B` (task "Beach Time: run in Chrome"), or run `.\run_dev.ps1`. Then press `r` in that terminal to hot reload and `R` to restart. The script runs from `%USERPROFILE%\beach_time`, a link to this folder, because the Flutter web debug compiler fails on the space in "BEACH TIME".
 
 ```powershell
 flutter pub get
